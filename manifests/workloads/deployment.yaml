@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: user-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
         - image: imalouhov/prometheus-homework:0.0.1
@@ -22,11 +26,3 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
