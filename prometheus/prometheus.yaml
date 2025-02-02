@@ -1,6 +1,0 @@
-server:
-  persistentVolume:
-    size: 8Gi
-alertmanager:
-  persistentVolume:
-    size: 2Gi
