@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 29,
+  "id": 14,
   "links": [],
   "panels": [
     {
@@ -38,6 +38,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -100,6 +101,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.1",
       "targets": [
         {
           "datasource": {
@@ -147,6 +149,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -209,6 +212,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.1",
       "targets": [
         {
           "datasource": {
@@ -269,6 +273,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -330,6 +335,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.1",
       "targets": [
         {
           "datasource": {
@@ -337,14 +343,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=~'/dumb/.*'}[1m]))",
+          "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=\"/hello\"}[1m]) * 100)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Requests per second",
+      "title": "Requests per second (/hello)",
       "type": "timeseries"
     },
     {
@@ -364,6 +370,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -425,6 +432,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.1",
       "targets": [
         {
           "datasource": {
@@ -432,7 +440,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile($quantile, sum by(le, uri) (rate(http_server_requests_seconds_bucket{uri=~\"/dumb/.*\"}[2m])))",
+          "expr": "irate(http_server_requests_seconds_sum{uri=\"/hello\"}[1m]) / rate(http_server_requests_seconds_count{uri=\"/hello\"}[1m])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -441,118 +449,21 @@
       ],
       "title": "Latency (response time)",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum by (uri) (rate(http_server_requests_seconds_count{uri=~'/dumb/.*',status=~\"5.+\"}[1m]))",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Error 5xx rate",
-      "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
           "text": "0.99",
           "value": "0.99"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Quantile",
-        "multi": false,
         "name": "quantile",
         "options": [
           {
@@ -592,21 +503,16 @@
           }
         ],
         "query": "max : 1, 0.99, 0.95, 0.9, 0.8, 0.75, 0.5",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": true,
-          "text": "10.1.41.82:8080",
-          "value": "10.1.41.82:8080"
+          "text": "10.244.0.13:8080",
+          "value": "10.244.0.13:8080"
         },
         "definition": "label_values(jvm_memory_used_bytes,instance)",
-        "hide": 0,
         "includeAll": false,
         "label": "instance",
-        "multi": false,
         "name": "instance",
         "options": [],
         "query": {
@@ -616,20 +522,18 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "2024-07-11T22:50:00.000Z",
-    "to": "2024-07-11T23:20:59.000Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {},
-  "timezone": "browser",
-  "title": "User API metrics",
-  "uid": "edrns9snwf7k0d",
-  "version": 25,
+  "timezone": "",
+  "title": "Homework",
+  "uid": "aebqn8pr1o8w0d",
+  "version": 7,
   "weekStart": ""
 }
